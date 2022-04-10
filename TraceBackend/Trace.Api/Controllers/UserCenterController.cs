@@ -48,8 +48,8 @@ namespace Trace.Api.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [Route("User/Get")]
-        [HttpPost]
+        [Route("User")]
+        [HttpGet]
         [AuthorizationFilter]
         public async Task<ResponseBase<UserDataResponse>> GetUserData([FromBody] RequestBase request)
         {
@@ -61,7 +61,7 @@ namespace Trace.Api.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [Route("User/Put")]
+        [Route("User")]
         [HttpPost]
         [AuthorizationFilter]
         public async Task<ResponseBase<Base>> UpdateUserInfo([FromBody] UpdateUserDataArgs request)
@@ -75,8 +75,8 @@ namespace Trace.Api.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [Route("Friend/Get")]
-        [HttpPost]
+        [Route("Friend")]
+        [HttpGet]
         [AuthorizationFilter]
         public async Task<ResponseBase<List<UserDataResponse>>> GetUserFriends([FromBody] RequestBase request) 
         {
@@ -89,7 +89,7 @@ namespace Trace.Api.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [Route("Friend/Post")]
+        [Route("Friend")]
         [HttpPost]
         [AuthorizationFilter]
         public async Task<ResponseBase<Base>> UpdateUserFriend([FromBody] UpdateUserFriendArgs request)
@@ -102,8 +102,8 @@ namespace Trace.Api.Controllers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [Route("Friend/Delete")]
-        [HttpPost]
+        [Route("Friend")]
+        [HttpDelete]
         [AuthorizationFilter]
         public async Task<ResponseBase<Base>> DeleteUserFriends([FromBody] DeleteFriendsArgs request)
         {
