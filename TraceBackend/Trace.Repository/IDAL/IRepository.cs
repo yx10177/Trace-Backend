@@ -19,7 +19,7 @@ namespace Trace.Repository
         void Update(TEntity entityToUpdate);
         void Delete(TEntity entityToDelete);
         void DeleteRange(IEnumerable<TEntity> entitiesToDelete);
-        
+        void SaveChanges();
         Task SaveChangesAsync();
 
     }

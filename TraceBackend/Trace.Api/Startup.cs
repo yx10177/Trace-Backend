@@ -67,7 +67,15 @@ namespace Trace.Api
                      options.UseSqlServer(Configuration.GetConnectionString("ApplicationDb")));
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserFriendRepository, UserFriendRepository>();
+            services.AddScoped<IUserRecordRepository, UserRecordRepository>();
+            services.AddScoped<ITripEventRepository, TripEventRepository>();
+            services.AddScoped<ITripGroupRepository, TripGroupRepository>();
+            services.AddScoped<ITripArticleRepository, TripArticleRepository>();
+            services.AddScoped<ITripPhotoRepository, TripPhotoRepository>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
+
             services.AddScoped<IUserCenter, UserCenter>();
+            services.AddScoped<ITripCenter, TripCenter>();
 
         }
 

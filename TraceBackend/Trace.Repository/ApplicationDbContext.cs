@@ -30,6 +30,7 @@ namespace Trace.Repository
         {
             if (!optionsBuilder.IsConfigured)
             {
+
             }
         }
 

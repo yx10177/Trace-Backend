@@ -15,9 +15,5 @@ namespace Trace.Repository
         public int TripId { get; set; }
         [Key]
         public int MemberId { get; set; }
-        [Column(TypeName = "date")]
-        public DateTime StartDt { get; set; }
-        [Column(TypeName = "date")]
-        public DateTime EndDt { get; set; }
     }
 }

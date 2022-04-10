@@ -49,6 +49,12 @@ namespace Trace.Repository
 
             _dbSet.AddRange(entitys);
         }
+
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
+        }
+
         public Task SaveChangesAsync()
         {
             return _context.SaveChangesAsync();
