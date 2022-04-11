@@ -107,6 +107,7 @@ namespace Trace.BLL
                                                        StartDt = t.StartDt.Value,
                                                        EndDt = t.EndDt.Value
                                                    });
+                // ToDo : TripRecord
                 response.Entries = await tripEvent.SingleOrDefaultAsync();
 
             }
@@ -192,6 +193,7 @@ namespace Trace.BLL
                 }
                 _tripGroupRepository.InsertRange(members);
                 await _tripGroupRepository.SaveChangesAsync();
+                response.Entries.Id = tripEvent.TripId;
 
             }
             catch (Exception ex)

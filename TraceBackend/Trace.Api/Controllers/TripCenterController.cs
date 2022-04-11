@@ -39,7 +39,7 @@ namespace Trace.Api.Controllers
         [Route("TripEvent")]
         [HttpGet]
         [AuthorizationFilter]
-        public async Task<ResponseBase<TripEventDataResponse>> GetTripEvent([FromBody] Base request)
+        public async Task<ResponseBase<TripEventDataResponse>> GetTripEvent([FromQuery] Base request)
         {
             return await _tripCenter.GetTripEvent(request);
         }
@@ -76,7 +76,7 @@ namespace Trace.Api.Controllers
         [Route("TripRecord")]
         [HttpGet]
         [AuthorizationFilter]
-        public async Task<ResponseBase<TripRecordDataResponse>> GetTripRecord([FromBody] Base request)
+        public async Task<ResponseBase<TripRecordDataResponse>> GetTripRecord([FromQuery] Base request)
         {
             return await _tripCenter.GetTripRecord(request);
         }
