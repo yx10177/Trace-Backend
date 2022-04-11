@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -14,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Trace.BLL;
 using Trace.Repository;
+using Utils;
 
 namespace Trace.Api
 {
@@ -29,6 +32,17 @@ namespace Trace.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(option => {
+                option.AddPolicy("CrosPolicy", policy =>
+                {
+                    //註冊CORS的Policy規則
+                    //設定允許的跨域來源、允許任何的 Request Header、允許任何的 HTTP Method、允許憑證(CORS 的憑證，如：Cookies)
+                    policy.WithOrigins("http://localhost:8080", "http://predictive-fx-316103.an.r.appspot.com")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -82,6 +96,12 @@ namespace Trace.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors("CrosPolicy");
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(ConfigurationHelper.GetSection("TripPhotoDir").Value),
+                RequestPath = new PathString("/photo")
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
