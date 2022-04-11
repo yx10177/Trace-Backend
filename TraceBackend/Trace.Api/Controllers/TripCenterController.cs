@@ -19,7 +19,11 @@ namespace Trace.Api.Controllers
         {
             _tripCenter = tripCenter;
         }
-
+        /// <summary>
+        /// 新增一筆旅遊事件
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [Route("TripEvent")]
         [HttpPost]
         [AuthorizationFilter]
@@ -28,7 +32,11 @@ namespace Trace.Api.Controllers
             request.Payload = (JWTPayload)HttpContext.Items["jwtPayload"];
             return await _tripCenter.SaveTripEvent(request);
         }
-
+        /// <summary>
+        /// 刪除一筆旅遊事件
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [Route("TripEvent")]
         [HttpDelete]
         [AuthorizationFilter]
@@ -36,6 +44,11 @@ namespace Trace.Api.Controllers
         {
             return await _tripCenter.DeleteTripEvent(request);
         }
+        /// <summary>
+        /// 取得一筆旅遊事件
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [Route("TripEvent")]
         [HttpGet]
         [AuthorizationFilter]

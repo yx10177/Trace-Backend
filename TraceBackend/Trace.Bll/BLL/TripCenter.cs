@@ -162,24 +162,27 @@ namespace Trace.BLL
             {
                 #region CheckValid
                 #endregion
-                //todo
+                _tripEventRepositoy.GetDatabase().BeginTransaction();
+                TripEvent tripEvent = new TripEvent();
                 //新增
                 if (args.TripId == 0)
                 {
-
+                    tripEvent = new TripEvent()
+                    {
+                        TripTitle = args.TripTitle,
+                        StartDt = DateTime.Parse(args.StartDate),
+                        EndDt = DateTime.Parse(args.EndDate)
+                    };
+                    _tripEventRepositoy.Insert(tripEvent);
                 }
                 //修改
                 else 
                 {
-
+                    tripEvent = _tripEventRepositoy.Get(t => t.TripId == args.TripId).SingleOrDefault();
+                    tripEvent.TripTitle = args.TripTitle;
+                    tripEvent.StartDt = DateTime.Parse(args.StartDate);
+                    tripEvent.EndDt = DateTime.Parse(args.EndDate);
                 }
-                TripEvent tripEvent = new TripEvent()
-                {
-                    TripTitle = args.TripTitle,
-                    StartDt = DateTime.Parse(args.StartDate),
-                    EndDt = DateTime.Parse(args.EndDate)
-                };
-                _tripEventRepositoy.Insert(tripEvent);
                 _tripEventRepositoy.SaveChanges();
 
                 List<TripGroup> members = new List<TripGroup>();
@@ -194,10 +197,11 @@ namespace Trace.BLL
                 _tripGroupRepository.InsertRange(members);
                 await _tripGroupRepository.SaveChangesAsync();
                 response.Entries.Id = tripEvent.TripId;
-
+                _tripEventRepositoy.GetDatabase().CommitTransaction();
             }
             catch (Exception ex)
             {
+                _tripEventRepositoy.GetDatabase().RollbackTransaction();
                 response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }
@@ -213,39 +217,48 @@ namespace Trace.BLL
 
             try
             {
+                _userRecordRepository.GetDatabase().BeginTransaction();
+                Location location = _locationRepository.Get(l => l.LocationTitle == args.Location).FirstOrDefault();
+                if (location == null) 
+                {
+                    location = new Location()
+                    {
+                        LocationTitle = args.Location,
+                        Longitude = args.Longitude,
+                        Latitude = args.Latitude
+                    };
+                    _locationRepository.Insert(location);
+                    _locationRepository.SaveChanges();
+                }
+                
 
-                //todo
+                UserRecord userRecord = new UserRecord();
                 //新增
                 if (args.UserRecordId == 0)
                 {
-
+                    userRecord = new UserRecord()
+                    {
+                        UserId = args.Payload.UserId,
+                        TripId = args.TripId,
+                        LocationId = location.LocationId,
+                        OccurDt = DateTime.Parse(args.OccurDt),
+                    };
+                    _userRecordRepository.Insert(userRecord);
                 }
                 //修改
                 else
                 {
-
+                    userRecord = _userRecordRepository.Get(u => u.RecordId == args.UserRecordId).SingleOrDefault();
+                    userRecord.LocationId = location.LocationId;
+                    userRecord.OccurDt = DateTime.Parse(args.OccurDt);
                 }
-                Location location = new Location()
-                {
-                    LocationTitle = args.Location,
-                    Longitude = args.Longitude,
-                    Latitude = args.Latitude
-                };
-                _locationRepository.Insert(location);
-                _locationRepository.SaveChanges();
-                UserRecord userRecord = new UserRecord()
-                {
-                    UserId = args.Payload.UserId,
-                    TripId = args.TripId,
-                    LocationId = location.LocationId,
-                    OccurDt = DateTime.Parse(args.OccurDt),
-                };
-                _userRecordRepository.Insert(userRecord);
                 await _userRecordRepository.SaveChangesAsync();
                 response.Entries.Id = userRecord.RecordId;
+                _userRecordRepository.GetDatabase().CommitTransaction();
             }
             catch (Exception ex)
             {
+                _userRecordRepository.GetDatabase().RollbackTransaction();
                 response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }

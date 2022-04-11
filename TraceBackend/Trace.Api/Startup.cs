@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Trace.BLL;
@@ -46,6 +47,10 @@ namespace Trace.Api
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
+                var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                var commentsFileName = "Trace.Api" + ".XML";
+                var commentsFile = Path.Combine(baseDirectory, commentsFileName);
+                c.IncludeXmlComments(commentsFile);
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Trace", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {

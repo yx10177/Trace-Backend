@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +22,8 @@ namespace Trace.Repository
             _dbSet = _context.Set<TEntity>();
         }
 
+      
+
         public void Delete(TEntity entityToDelete)
         {
             if (entityToDelete == null) throw new ArgumentNullException(nameof(entityToDelete));
@@ -37,6 +41,12 @@ namespace Trace.Repository
             if (filter == null) return _dbSet;
             else return _dbSet.Where(filter);
         }
+
+        public DatabaseFacade GetDatabase()
+        {
+            return _context.Database;
+        }
+
         public void Insert(TEntity entity)
         {
             if (entity == null) throw new ArgumentNullException(nameof(entity));
