@@ -111,13 +111,12 @@ namespace Trace.BLL
             try
             {
                 string encrypPwd = CrypHelper.GetMD5HashString(args.Password);
-                var user = _userRepositoy.Get(u => u.UserAccount == args.Account && u.UserPassword == args.Password)
-                                         .Select(u=>new Base() 
-                                         {
-                                             Id = u.UserId
-                                         });
-               
-                response.Entries = await user.SingleOrDefaultAsync();
+                var user = await _userRepositoy.Get(u => u.UserAccount == args.Account && u.UserPassword == encrypPwd)
+                                               .Select(u => u)
+                                               .SingleOrDefaultAsync();
+
+
+                response.Entries.Id = user.UserId;
             }
             catch (Exception ex)
             {
@@ -163,6 +162,7 @@ namespace Trace.BLL
                 };
                 _userRepositoy.Insert(user);
                 await _userRepositoy.SaveChangesAsync();
+                response.Entries.Id = user.UserId;
             }
             catch (Exception ex)
             {
@@ -195,6 +195,7 @@ namespace Trace.BLL
 
                 _userFriendRepository.Insert(userFriend);
                 await _userFriendRepository.SaveChangesAsync();
+                response.Entries.Id = friendInfo.UserId;
             }
             catch (Exception ex)
             {
@@ -216,7 +217,7 @@ namespace Trace.BLL
                 var user = _userRepositoy.Get(u => u.UserId == args.Payload.UserId).SingleOrDefault();
                 user.UserName = args.Name;
                 user.UserEmail = args.Email;
-                string imagePath = $"photo/{DateTime.Now.ToString("yyMMddHHmmssfff")}{args.Photo.FileName}";
+                string imagePath = $"{ConfigurationHelper.GetSection("TripPhotoDir").Value}/{DateTime.Now.ToString("yyMMddHHmmssfff")}{args.Photo.FileName}";
                 using (var strearm = new FileStream(imagePath, FileMode.Create))
                 {
                     args.Photo.CopyToAsync(strearm);

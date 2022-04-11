@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 namespace Trace.Repository
 {
     [Table("User")]
-    [Index(nameof(UserAccount), Name = "IX_User", IsUnique = true)]
     public partial class User
     {
         [Key]
@@ -23,7 +22,7 @@ namespace Trace.Repository
         public string UserEmail { get; set; }
         [StringLength(50)]
         public string UserName { get; set; }
-        [StringLength(50)]
+        [StringLength(100)]
         public string UserPhotoPath { get; set; }
     }
 }

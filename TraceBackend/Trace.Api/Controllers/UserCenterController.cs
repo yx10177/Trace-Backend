@@ -51,7 +51,7 @@ namespace Trace.Api.Controllers
         [Route("User")]
         [HttpGet]
         [AuthorizationFilter]
-        public async Task<ResponseBase<UserDataResponse>> GetUserData([FromBody] RequestBase request)
+        public async Task<ResponseBase<UserDataResponse>> GetUserData([FromQuery] RequestBase request)
         {
             request.Payload = (JWTPayload)HttpContext.Items["jwtPayload"];
             return await _userCenter.GetUserData(request);
@@ -64,7 +64,7 @@ namespace Trace.Api.Controllers
         [Route("User")]
         [HttpPost]
         [AuthorizationFilter]
-        public async Task<ResponseBase<Base>> UpdateUserInfo([FromBody] UpdateUserDataArgs request)
+        public async Task<ResponseBase<Base>> UpdateUserInfo([FromForm] UpdateUserDataArgs request)
         {
             request.Payload = (JWTPayload)HttpContext.Items["jwtPayload"];
             return await _userCenter.UpdateUserInfo(request);
@@ -78,7 +78,7 @@ namespace Trace.Api.Controllers
         [Route("Friend")]
         [HttpGet]
         [AuthorizationFilter]
-        public async Task<ResponseBase<List<UserDataResponse>>> GetUserFriends([FromBody] RequestBase request) 
+        public async Task<ResponseBase<List<UserDataResponse>>> GetUserFriends([FromQuery] RequestBase request) 
         {
             request.Payload = (JWTPayload)HttpContext.Items["jwtPayload"];
             return await _userCenter.GetUserFriends(request);

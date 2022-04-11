@@ -30,7 +30,6 @@ namespace Trace.Repository
         {
             if (!optionsBuilder.IsConfigured)
             {
-
             }
         }
 
@@ -53,8 +52,6 @@ namespace Trace.Repository
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.Property(e => e.UserId).ValueGeneratedNever();
-
                 entity.Property(e => e.UserAccount).IsUnicode(false);
 
                 entity.Property(e => e.UserPassword).IsUnicode(false);
