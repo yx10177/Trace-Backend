@@ -31,17 +31,17 @@ namespace Trace.BLL
             try
             {
                 var friends = _userFriendRepository.Get(u => u.UserId == args.Payload.UserId && args.FriendIds.Contains(u.FriendId));
+                
                 _userFriendRepository.DeleteRange(friends);
                 await _userFriendRepository.SaveChangesAsync();
 
             }
             catch (Exception ex)
             {
-                response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }
             return response;
-            
+
         }
 
         public async Task<ResponseBase<UserDataResponse>> GetUserData(RequestBase args)
@@ -54,19 +54,24 @@ namespace Trace.BLL
             try
             {
                 var user = _userRepositoy.Get(u => u.UserId == args.Payload.UserId)
-                                         .Select(u => new UserDataResponse
-                                         {
-                                             UserId = u.UserId,
-                                             UserName = u.UserName,
-                                             UserAccount = u.UserAccount,
-                                             UserEmail = u.UserEmail,
-                                             UserPhotoPath = u.UserPhotoPath
-                                         });
+                                               .Select(u => new UserDataResponse
+                                               {
+                                                     UserId = u.UserId,
+                                                     UserName = u.UserName,
+                                                     UserAccount = u.UserAccount,
+                                                     UserEmail = u.UserEmail,
+                                                     UserPhotoPath = u.UserPhotoPath
+                                                 });
+                
                 response.Entries = await user.SingleOrDefaultAsync();
+                if (response.Entries == null)
+                {
+                    response.Message = "帳號不存在";
+                    return response;
+                }
             }
             catch (Exception ex)
             {
-                response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }
             return response;
@@ -92,10 +97,14 @@ namespace Trace.BLL
                                                     UserPhotoPath = u.UserPhotoPath
                                                 });
                 response.Entries = await friendsInfo.ToListAsync();
+                if (response.Entries == null)
+                {
+                    response.Message = "帳號不存在";
+                    return response;
+                }
             }
             catch (Exception ex)
             {
-                response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }
             return response;
@@ -114,13 +123,16 @@ namespace Trace.BLL
                 var user = await _userRepositoy.Get(u => u.UserAccount == args.Account && u.UserPassword == encrypPwd)
                                                .Select(u => u)
                                                .SingleOrDefaultAsync();
-
+                if (user == null) 
+                {
+                    response.Message = "帳號不存在";
+                    return response;
+                }
 
                 response.Entries.Id = user.UserId;
             }
             catch (Exception ex)
             {
-                response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }
             return response;
@@ -135,25 +147,17 @@ namespace Trace.BLL
 
             try
             {
-                #region CheckValid
-                StringBuilder errorMsg = new StringBuilder();
-                if (string.IsNullOrEmpty(args.Account)) 
+                if (string.IsNullOrEmpty(args.Account) || string.IsNullOrEmpty(args.Password))
                 {
-                    errorMsg.Append("帳號不得為空,");
+                    response.Message = "帳號或密碼不得為空";
+                    return response;
                 }
-                if (string.IsNullOrEmpty(args.Password))
+                
+                if (_userRepositoy.Get(u => u.UserAccount == args.Account).Any())
                 {
-                    errorMsg.Append("密碼不得為空,");
+                    response.Message = "帳號已存在";
+                    return response;
                 }
-                if (_userRepositoy.Get(u => u.UserAccount == args.Account).Any()) 
-                {
-                    errorMsg.Append("帳號已存在");
-                }
-                if (!string.IsNullOrEmpty(errorMsg.ToString()))
-                {
-                    throw new Exception(errorMsg.ToString());
-                }
-                #endregion
                 string encrypPwd = CrypHelper.GetMD5HashString(args.Password);
                 var user = new User
                 {
@@ -166,7 +170,6 @@ namespace Trace.BLL
             }
             catch (Exception ex)
             {
-                response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }
             return response;
@@ -182,9 +185,10 @@ namespace Trace.BLL
             try
             {
                 var friendInfo = _userRepositoy.Get(u => u.UserAccount == args.FriendAccount).SingleOrDefault();
-                if (friendInfo == null) 
+                if (friendInfo == null)
                 {
-                    throw new Exception("查無此人");
+                    response.Message = "查無此人";
+                    return response;
                 }
                 //var userFriend= _userFriendRepository.Get(u => u.UserId == args.Payload.UserId && u.FriendId == friendInfo.UserId).SingleOrDefault();                     
                 UserFriend userFriend = new UserFriend()
@@ -199,7 +203,6 @@ namespace Trace.BLL
             }
             catch (Exception ex)
             {
-                response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }
             return response;
@@ -215,6 +218,11 @@ namespace Trace.BLL
             try
             {
                 var user = _userRepositoy.Get(u => u.UserId == args.Payload.UserId).SingleOrDefault();
+                if (user == null)
+                {
+                    response.Message = "無效的使用者";
+                    return response;
+                }
                 user.UserName = args.Name;
                 user.UserEmail = args.Email;
                 string imagePath = $"{ConfigurationHelper.GetSection("TripPhotoDir").Value}/{DateTime.Now.ToString("yyMMddHHmmssfff")}{args.Photo.FileName}";
@@ -227,7 +235,6 @@ namespace Trace.BLL
             }
             catch (Exception ex)
             {
-                response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }
             return response;

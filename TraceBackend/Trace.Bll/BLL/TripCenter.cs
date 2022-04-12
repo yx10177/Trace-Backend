@@ -41,13 +41,11 @@ namespace Trace.BLL
                 var tripGroup = _tripGroupRepository.Get(t => t.TripId == args.Id).ToList();
                 _tripEventRepositoy.Delete(tripEvent);
                 _tripGroupRepository.DeleteRange(tripGroup);
-
                 await _tripGroupRepository.SaveChangesAsync();
 
             }
             catch (Exception ex)
             {
-                response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }
             return response;
@@ -64,6 +62,11 @@ namespace Trace.BLL
             {
 
                 var userRecord = _userRecordRepository.Get(r => r.RecordId == args.Id).SingleOrDefault();
+                if (userRecord == null) 
+                {
+                    response.Message = "UserRecord Not Found";
+                    return response;
+                }
                 var articles = _tripArticleRepository.Get(r => r.RecordId == args.Id).ToList();
                 var photos = _tripPhotoRepository.Get(r => r.RecordId == args.Id).ToList();
                 foreach (var p in photos) 
@@ -83,7 +86,6 @@ namespace Trace.BLL
             }
             catch (Exception ex)
             {
-                response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }
             return response;
@@ -109,11 +111,13 @@ namespace Trace.BLL
                                                    });
                 // ToDo : TripRecord
                 response.Entries = await tripEvent.SingleOrDefaultAsync();
-
+                if (response.Entries == null) 
+                {
+                    response.Message = "TripEvent Not Found";
+                }
             }
             catch (Exception ex)
             {
-                response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }
             return response;
@@ -142,10 +146,13 @@ namespace Trace.BLL
                                       });
 
                 response.Entries = await tripRecord.SingleOrDefaultAsync();
+                if (response.Entries == null) 
+                {
+                    response.Message = "TripRecord Not Found";
+                }
             }
             catch (Exception ex)
             {
-                response.StatusCode = EnumStatusCode.Fail;
                 response.Message = ex.Message;
             }
             return response;
@@ -179,6 +186,11 @@ namespace Trace.BLL
                 else 
                 {
                     tripEvent = _tripEventRepositoy.Get(t => t.TripId == args.TripId).SingleOrDefault();
+                    if (tripEvent == null) 
+                    {
+                        response.Message = "TripEvent Not Found";
+                        return response;
+                    }
                     tripEvent.TripTitle = args.TripTitle;
                     tripEvent.StartDt = DateTime.Parse(args.StartDate);
                     tripEvent.EndDt = DateTime.Parse(args.EndDate);
@@ -202,7 +214,7 @@ namespace Trace.BLL
             catch (Exception ex)
             {
                 _tripEventRepositoy.GetDatabase().RollbackTransaction();
-                response.StatusCode = EnumStatusCode.Fail;
+               
                 response.Message = ex.Message;
             }
             return response;
@@ -249,6 +261,11 @@ namespace Trace.BLL
                 else
                 {
                     userRecord = _userRecordRepository.Get(u => u.RecordId == args.UserRecordId).SingleOrDefault();
+                    if (userRecord == null) 
+                    {
+                        response.Message = "UserRecord Not Found";
+                        return response;
+                    }
                     userRecord.LocationId = location.LocationId;
                     userRecord.OccurDt = DateTime.Parse(args.OccurDt);
                 }
@@ -259,7 +276,7 @@ namespace Trace.BLL
             catch (Exception ex)
             {
                 _userRecordRepository.GetDatabase().RollbackTransaction();
-                response.StatusCode = EnumStatusCode.Fail;
+                
                 response.Message = ex.Message;
             }
             return response;
