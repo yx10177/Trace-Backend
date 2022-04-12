@@ -66,7 +66,7 @@ namespace Trace.BLL
                 response.Entries = await user.SingleOrDefaultAsync();
                 if (response.Entries == null)
                 {
-                    response.Message = "帳號不存在";
+                    response.Message = "User Not Found";
                     return response;
                 }
             }
@@ -99,7 +99,7 @@ namespace Trace.BLL
                 response.Entries = await friendsInfo.ToListAsync();
                 if (response.Entries == null)
                 {
-                    response.Message = "帳號不存在";
+                    response.Message = "Friends Not Found";
                     return response;
                 }
             }
@@ -119,13 +119,14 @@ namespace Trace.BLL
 
             try
             {
+
                 string encrypPwd = CrypHelper.GetMD5HashString(args.Password);
                 var user = await _userRepositoy.Get(u => u.UserAccount == args.Account && u.UserPassword == encrypPwd)
                                                .Select(u => u)
                                                .SingleOrDefaultAsync();
                 if (user == null) 
                 {
-                    response.Message = "帳號不存在";
+                    response.Message = "User Not Found";
                     return response;
                 }
 
@@ -147,15 +148,9 @@ namespace Trace.BLL
 
             try
             {
-                if (string.IsNullOrEmpty(args.Account) || string.IsNullOrEmpty(args.Password))
-                {
-                    response.Message = "帳號或密碼不得為空";
-                    return response;
-                }
-                
                 if (_userRepositoy.Get(u => u.UserAccount == args.Account).Any())
                 {
-                    response.Message = "帳號已存在";
+                    response.Message = "User Is Existed";
                     return response;
                 }
                 string encrypPwd = CrypHelper.GetMD5HashString(args.Password);
@@ -187,7 +182,7 @@ namespace Trace.BLL
                 var friendInfo = _userRepositoy.Get(u => u.UserAccount == args.FriendAccount).SingleOrDefault();
                 if (friendInfo == null)
                 {
-                    response.Message = "查無此人";
+                    response.Message = "User Not Found";
                     return response;
                 }
                 //var userFriend= _userFriendRepository.Get(u => u.UserId == args.Payload.UserId && u.FriendId == friendInfo.UserId).SingleOrDefault();                     
@@ -220,7 +215,7 @@ namespace Trace.BLL
                 var user = _userRepositoy.Get(u => u.UserId == args.Payload.UserId).SingleOrDefault();
                 if (user == null)
                 {
-                    response.Message = "無效的使用者";
+                    response.Message = "User Not Found";
                     return response;
                 }
                 user.UserName = args.Name;

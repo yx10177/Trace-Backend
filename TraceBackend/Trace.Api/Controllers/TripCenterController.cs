@@ -27,10 +27,15 @@ namespace Trace.Api.Controllers
         [Route("TripEvent")]
         [HttpPost]
         [AuthorizationFilter]
-        public async Task<ResponseBase<Base>> SaveTripEvent([FromBody] SaveTripEventArgs request)
+        public async Task<IActionResult> SaveTripEvent([FromBody] SaveTripEventArgs request)
         {
             request.Payload = (JWTPayload)HttpContext.Items["jwtPayload"];
-            return await _tripCenter.SaveTripEvent(request);
+            var result = await _tripCenter.SaveTripEvent(request);
+            if (result.StatusCode == EnumStatusCode.Success)
+            {
+                return CreatedAtAction(nameof(GetTripEvent), result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
         }
         /// <summary>
         /// 刪除一筆旅遊事件
@@ -40,9 +45,14 @@ namespace Trace.Api.Controllers
         [Route("TripEvent")]
         [HttpDelete]
         [AuthorizationFilter]
-        public async Task<ResponseBase<Base>> DeleteTripEvent([FromBody] Base request)
+        public async Task<IActionResult> DeleteTripEvent([FromBody] Base request)
         {
-            return await _tripCenter.DeleteTripEvent(request);
+            var result = await _tripCenter.DeleteTripEvent(request);
+            if (result.StatusCode == EnumStatusCode.Success)
+            {
+                return CreatedAtAction(nameof(GetTripEvent), result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
         }
         /// <summary>
         /// 取得一筆旅遊事件
@@ -52,9 +62,14 @@ namespace Trace.Api.Controllers
         [Route("TripEvent")]
         [HttpGet]
         [AuthorizationFilter]
-        public async Task<ResponseBase<TripEventDataResponse>> GetTripEvent([FromQuery] Base request)
+        public async Task<IActionResult> GetTripEvent([FromQuery] Base request)
         {
-            return await _tripCenter.GetTripEvent(request);
+            var result = await _tripCenter.GetTripEvent(request);
+            if (result.StatusCode == EnumStatusCode.Success)
+            {
+                return Ok(result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
         }
         /// <summary>
         /// 新增一筆旅遊紀錄
@@ -64,10 +79,15 @@ namespace Trace.Api.Controllers
         [Route("TripRecord")]
         [HttpPost]
         [AuthorizationFilter]
-        public async Task<ResponseBase<Base>> SaveUserRecord([FromBody] SaveUserRecordArgs request)
+        public async Task<IActionResult> SaveUserRecord([FromBody] SaveUserRecordArgs request)
         {
             request.Payload = (JWTPayload)HttpContext.Items["jwtPayload"];
-            return await _tripCenter.SaveUserRecord(request);
+            var result = await _tripCenter.SaveUserRecord(request);
+            if (result.StatusCode == EnumStatusCode.Success)
+            {
+                return CreatedAtAction(nameof(GetTripRecord), result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
         }
         /// <summary>
         /// 刪除一筆旅遊紀錄
@@ -77,9 +97,14 @@ namespace Trace.Api.Controllers
         [Route("TripRecord")]
         [HttpDelete]
         [AuthorizationFilter]
-        public async Task<ResponseBase<Base>> DeleteUserRecord([FromBody] Base request)
+        public async Task<IActionResult> DeleteUserRecord([FromBody] Base request)
         {
-            return await _tripCenter.DeleteUserRecord(request);
+            var result = await _tripCenter.DeleteUserRecord(request);
+            if (result.StatusCode == EnumStatusCode.Success)
+            {
+                return CreatedAtAction(nameof(GetTripRecord), result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
         }
         /// <summary>
         /// 取得一筆旅遊紀錄
@@ -89,9 +114,14 @@ namespace Trace.Api.Controllers
         [Route("TripRecord")]
         [HttpGet]
         [AuthorizationFilter]
-        public async Task<ResponseBase<TripRecordDataResponse>> GetTripRecord([FromQuery] Base request)
+        public async Task<IActionResult> GetTripRecord([FromQuery] Base request)
         {
-            return await _tripCenter.GetTripRecord(request);
+            var result = await _tripCenter.GetTripRecord(request);
+            if (result.StatusCode == EnumStatusCode.Success)
+            {
+                return Ok(result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
         }
     }
 }

@@ -28,9 +28,15 @@ namespace Trace.Api.Controllers
         /// <returns></returns>
         [Route("Register")]
         [HttpPost]
-        public async Task<ResponseBase<Base>> Register([FromBody] LoginArgs request)
+        public async Task<IActionResult> Register([FromBody] LoginArgs request)
         {
-            return await _userCenter.Register(request);
+            var result = await _userCenter.Register(request);
+            if (result.StatusCode == EnumStatusCode.Success) 
+            {
+                return CreatedAtAction(nameof(GetUserData),result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
+            
         }
         /// <summary>
         /// 會員登入
@@ -39,9 +45,14 @@ namespace Trace.Api.Controllers
         /// <returns></returns>
         [Route("Login")]
         [HttpPost]
-        public async Task<ResponseBase<Base>> Login([FromBody] LoginArgs request)
+        public async Task<IActionResult> Login([FromBody] LoginArgs request)
         {
-            return await _userCenter.Login(request);
+            var result = await _userCenter.Login(request);
+            if (result.StatusCode == EnumStatusCode.Success)
+            {
+                return Ok(result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
         }
         /// <summary>
         /// 取得會員資料
@@ -51,10 +62,15 @@ namespace Trace.Api.Controllers
         [Route("User")]
         [HttpGet]
         [AuthorizationFilter]
-        public async Task<ResponseBase<UserDataResponse>> GetUserData([FromQuery] RequestBase request)
+        public async Task<IActionResult> GetUserData([FromQuery] RequestBase request)
         {
             request.Payload = (JWTPayload)HttpContext.Items["jwtPayload"];
-            return await _userCenter.GetUserData(request);
+            var result = await _userCenter.GetUserData(request);
+            if (result.StatusCode == EnumStatusCode.Success)
+            {
+                return Ok(result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
         }
         /// <summary>
         /// 更新會員資料
@@ -64,10 +80,15 @@ namespace Trace.Api.Controllers
         [Route("User")]
         [HttpPost]
         [AuthorizationFilter]
-        public async Task<ResponseBase<Base>> UpdateUserInfo([FromForm] UpdateUserDataArgs request)
+        public async Task<IActionResult> UpdateUserInfo([FromForm] UpdateUserDataArgs request)
         {
             request.Payload = (JWTPayload)HttpContext.Items["jwtPayload"];
-            return await _userCenter.UpdateUserInfo(request);
+            var result = await _userCenter.UpdateUserInfo(request);
+            if (result.StatusCode == EnumStatusCode.Success)
+            {
+                return CreatedAtAction(nameof(GetUserData), result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
         }
 
         /// <summary>
@@ -78,10 +99,15 @@ namespace Trace.Api.Controllers
         [Route("Friend")]
         [HttpGet]
         [AuthorizationFilter]
-        public async Task<ResponseBase<List<UserDataResponse>>> GetUserFriends([FromQuery] RequestBase request) 
+        public async Task<IActionResult> GetUserFriends([FromQuery] RequestBase request) 
         {
             request.Payload = (JWTPayload)HttpContext.Items["jwtPayload"];
-            return await _userCenter.GetUserFriends(request);
+            var result = await _userCenter.GetUserFriends(request);
+            if (result.StatusCode == EnumStatusCode.Success)
+            {
+                return Ok(result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
         }
 
         /// <summary>
@@ -92,10 +118,15 @@ namespace Trace.Api.Controllers
         [Route("Friend")]
         [HttpPost]
         [AuthorizationFilter]
-        public async Task<ResponseBase<Base>> UpdateUserFriend([FromBody] UpdateUserFriendArgs request)
+        public async Task<IActionResult> UpdateUserFriend([FromBody] UpdateUserFriendArgs request)
         {
             request.Payload = (JWTPayload)HttpContext.Items["jwtPayload"];
-            return await _userCenter.UpdateUserFriend(request);
+            var result = await _userCenter.UpdateUserFriend(request);
+            if (result.StatusCode == EnumStatusCode.Success)
+            {
+                return CreatedAtAction(nameof(GetUserFriends), result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
         }
         /// <summary>
         /// 刪除好友
@@ -105,12 +136,15 @@ namespace Trace.Api.Controllers
         [Route("Friend")]
         [HttpDelete]
         [AuthorizationFilter]
-        public async Task<ResponseBase<Base>> DeleteUserFriends([FromBody] DeleteFriendsArgs request)
+        public async Task<IActionResult> DeleteUserFriends([FromBody] DeleteFriendsArgs request)
         {
             request.Payload = (JWTPayload)HttpContext.Items["jwtPayload"];
-            return await _userCenter.DeleteUserFriends(request);
+            var result = await _userCenter.DeleteUserFriends(request);
+            if (result.StatusCode == EnumStatusCode.Success)
+            {
+                return CreatedAtAction(nameof(GetUserFriends), result.Entries);
+            }
+            return BadRequest(result.Message.ToString());
         }
-
-
     }
 }
