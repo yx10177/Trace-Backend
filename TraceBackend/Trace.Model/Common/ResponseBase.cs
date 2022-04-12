@@ -9,7 +9,7 @@ namespace Trace.Model
     {
         public T Entries { get; set; }
         public string Message { get; set; } = string.Empty;
-        public EnumStatusCode StatusCode { get; set; } = EnumStatusCode.Success;
+        public EnumStatusCode StatusCode { get => string.IsNullOrEmpty(Message) ? EnumStatusCode.Success : EnumStatusCode.Fail; }
     }
     public enum EnumStatusCode 
     {
