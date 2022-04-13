@@ -35,7 +35,7 @@ namespace Trace.Api.Controllers
             {
                 return CreatedAtAction(nameof(GetTripEvent), result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
         }
         /// <summary>
         /// 刪除一筆旅遊事件
@@ -52,7 +52,7 @@ namespace Trace.Api.Controllers
             {
                 return CreatedAtAction(nameof(GetTripEvent), result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
         }
         /// <summary>
         /// 取得一筆旅遊事件
@@ -69,7 +69,7 @@ namespace Trace.Api.Controllers
             {
                 return Ok(result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
         }
         /// <summary>
         /// 新增一筆旅遊紀錄
@@ -87,7 +87,7 @@ namespace Trace.Api.Controllers
             {
                 return CreatedAtAction(nameof(GetTripRecord), result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
         }
         /// <summary>
         /// 刪除一筆旅遊紀錄
@@ -104,7 +104,7 @@ namespace Trace.Api.Controllers
             {
                 return CreatedAtAction(nameof(GetTripRecord), result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
         }
         /// <summary>
         /// 取得一筆旅遊紀錄
@@ -121,7 +121,7 @@ namespace Trace.Api.Controllers
             {
                 return Ok(result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
         }
     }
 }

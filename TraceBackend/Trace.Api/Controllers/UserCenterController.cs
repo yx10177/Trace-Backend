@@ -35,7 +35,7 @@ namespace Trace.Api.Controllers
             {
                 return CreatedAtAction(nameof(GetUserData),result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
             
         }
         /// <summary>
@@ -52,7 +52,7 @@ namespace Trace.Api.Controllers
             {
                 return Ok(result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
         }
         /// <summary>
         /// 取得會員資料
@@ -70,7 +70,7 @@ namespace Trace.Api.Controllers
             {
                 return Ok(result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
         }
         /// <summary>
         /// 更新會員資料
@@ -88,7 +88,7 @@ namespace Trace.Api.Controllers
             {
                 return CreatedAtAction(nameof(GetUserData), result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Trace.Api.Controllers
             {
                 return Ok(result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace Trace.Api.Controllers
             {
                 return CreatedAtAction(nameof(GetUserFriends), result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
         }
         /// <summary>
         /// 刪除好友
@@ -144,7 +144,7 @@ namespace Trace.Api.Controllers
             {
                 return CreatedAtAction(nameof(GetUserFriends), result.Entries);
             }
-            return BadRequest(result.Message.ToString());
+            return BadRequest(result.Message);
         }
     }
 }
