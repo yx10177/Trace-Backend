@@ -50,7 +50,7 @@ namespace Trace.Api.Controllers
             var result = await _tripCenter.DeleteTripEvent(request);
             if (result.StatusCode == EnumStatusCode.Success)
             {
-                return CreatedAtAction(nameof(GetTripEvent), result.Entries);
+                return Ok();
             }
             return BadRequest(result.Message);
         }
@@ -102,7 +102,7 @@ namespace Trace.Api.Controllers
             var result = await _tripCenter.DeleteUserRecord(request);
             if (result.StatusCode == EnumStatusCode.Success)
             {
-                return CreatedAtAction(nameof(GetTripRecord), result.Entries);
+                return Ok();
             }
             return BadRequest(result.Message);
         }

@@ -142,7 +142,7 @@ namespace Trace.Api.Controllers
             var result = await _userCenter.DeleteUserFriends(request);
             if (result.StatusCode == EnumStatusCode.Success)
             {
-                return CreatedAtAction(nameof(GetUserFriends), result.Entries);
+                return Ok();
             }
             return BadRequest(result.Message);
         }
